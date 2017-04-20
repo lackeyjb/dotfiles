@@ -1,0 +1,163 @@
+"==============================================================================
+"                              ~ My .vimrc ~
+"==============================================================================
+set nocompatible " Not compatible with vi
+
+let g:ale_emit_conflict_warnings = 0
+
+call plug#begin()
+
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'scrooloose/nerdcommenter'
+Plug 'altercation/vim-colors-solarized'
+Plug 'airblade/vim-gitgutter'
+Plug 'raimondi/delimitmate'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer --clang-completer' }
+Plug 'mxw/vim-jsx', { 'for': ['javascript', 'javascript.jsx'] }
+Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javsacript.jsx'] }
+Plug 'othree/yajs.vim', { 'for': ['javascript', 'javascript.jsx'] }
+Plug 'othree/es.next.syntax.vim', { 'for': ['javascript', 'javascript.jsx'] }
+Plug 'othree/javascript-libraries-syntax.vim', { 'for': ['javascript', 'javascript.jsx'] }
+Plug 'isRuslan/vim-es6', { 'for': ['javascript', 'javascript.jsx'] }
+Plug 'scrooloose/nerdtree'
+Plug 'bling/vim-airline'
+Plug 'tpope/vim-fugitive'
+Plug 'elixir-lang/vim-elixir'
+Plug 'slashmili/alchemist.vim'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'tpope/vim-fireplace'
+Plug 'tpope/vim-salve'
+Plug 'guns/vim-clojure-static'
+Plug 'Yggdroot/indentLine'
+Plug 'jistr/vim-nerdtree-tabs'
+Plug 'wesQ3/vim-windowswap'
+Plug 'w0rp/ale'
+Plug 'junegunn/rainbow_parentheses.vim'
+Plug 'crusoexia/vim-dracula'
+Plug 'morhetz/gruvbox'
+
+call plug#end()
+
+" Easy access to start of line
+nmap 0 ^
+" Move through wrapped lines
+nmap k gk
+nmap j gj
+
+" set leader
+let mapleader = "\<Space>"
+
+" Open & source vimrc
+nmap <leader>vi :tabe $MYVIMRC<cr>
+nmap <leader>so :source $MYVIMRC<cr>
+
+" Display whitespace
+set list listchars=tab:»·,trail:·,nbsp:·
+
+" Edit another file in the same directory as the current file uses expression
+" to extract path from current file's path
+map <leader>e :e <C-R>=escape(expand("%:p:h"), ' ') . '/'<CR>
+map <leader>s :split <C-R>=escape(expand("%:p:h"), ' ') . '/'<CR>
+map <leader>v :vnew <C-R>=escape(expand("%:p:h"), ' ') . '/'<CR>
+
+" to escape
+imap jk <esc>
+imap kj <esc>
+
+" new tab
+map <C-t> <esc>:tabnew<CR>
+
+set clipboard=unnamed
+set ttyfast
+set mouse=a
+set ttymouse=xterm2
+
+" Display line numbers
+set hidden
+set number
+" Allow buffer change without saving
+set lazyredraw
+" Don't update while executing macros
+set updatetime=250
+
+set backspace=indent,eol,start "Sane backspace behavior
+set history=50
+set scrolloff=4
+set nobackup
+set nowritebackup
+set noswapfile
+set laststatus=2
+set autowrite
+set autoread
+set backspace=2
+set colorcolumn=80
+set expandtab
+set tabstop=2
+
+set shiftwidth=2
+set softtabstop=2
+set ruler
+syntax enable
+" set background=dark
+" colorscheme solarized
+" colorscheme dracula
+" let g:dracula_italic = 1
+colorscheme gruvbox
+
+" Use The Silver Searcher
+if executable('ag')
+  " Use Ag over Grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects  .gitignore
+  let g:ctrlp_user_command = 'ag -Q -l --nocolor --hidden -g "" %s'
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_user_caching = 0
+
+  if !exists(":Ag")
+    command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+    nnoremap \ :Ag<SPACE>
+  endif
+endif
+
+" Open new split panes to right and bottom, which feels more natural
+set splitbelow
+set splitright
+
+let g:NERDSpaceDelims = 1
+" To add git branch to statusline
+set statusline+=%{fugitive#statusline()}
+set statusline+=%{ALEGetStatusLine()}
+
+" For airline
+let g:airline_powerline_fonts = 1
+" Just show the filename (no path) in the tab
+let g:airline#extensions#tabline#fnamemod = ':t'
+
+" For jsx syntax
+let g:jsx_ext_required = 0
+
+" add jbuilder syntax highlighting
+au BufNewFile,BufRead *.jbuilder set ft=ruby
+
+" quit help
+autocmd Filetype help nmap <buffer> q :q<CR>
+
+autocmd BufWritePre * %s/\s\+$//e
+
+"Youcompleteme Fix
+let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
+
+" Rainbow parentheses
+augroup rainbow_lisp
+  autocmd!
+  autocmd FileType lisp,clojure RainbowParentheses
+augroup END
+
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
+
+let g:gruvbox_contrast_dark = 'dark'
