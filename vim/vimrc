@@ -14,7 +14,7 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'altercation/vim-colors-solarized'
 Plug 'airblade/vim-gitgutter'
 Plug 'raimondi/delimitmate'
-Plug 'Valloric/YouCompleteMe', { 'do': './install.py --tern-completer --clang-completer' }
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py --js-completer --clang-completer' }
 Plug 'mxw/vim-jsx', { 'for': ['javascript', 'javascript.jsx'] }
 Plug 'pangloss/vim-javascript', { 'for': ['javascript', 'javsacript.jsx'] }
 Plug 'othree/yajs.vim', { 'for': ['javascript', 'javascript.jsx'] }
@@ -24,7 +24,6 @@ Plug 'isRuslan/vim-es6', { 'for': ['javascript', 'javascript.jsx'] }
 Plug 'scrooloose/nerdtree'
 Plug 'bling/vim-airline'
 Plug 'tpope/vim-fugitive'
-Plug 'elixir-lang/vim-elixir'
 Plug 'slashmili/alchemist.vim'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'tpope/vim-fireplace'
@@ -37,6 +36,8 @@ Plug 'w0rp/ale'
 Plug 'junegunn/rainbow_parentheses.vim'
 Plug 'crusoexia/vim-dracula'
 Plug 'morhetz/gruvbox'
+Plug 'ryanoasis/vim-devicons'
+Plug 'mitermayer/vim-prettier', { 'do': 'npm install', 'for': ['javascript', 'css', 'scss'] }
 
 call plug#end()
 
@@ -69,6 +70,7 @@ imap kj <esc>
 " new tab
 map <C-t> <esc>:tabnew<CR>
 
+" setup the mouse
 set clipboard=unnamed
 set ttyfast
 set mouse=a
@@ -82,6 +84,7 @@ set lazyredraw
 " Don't update while executing macros
 set updatetime=250
 
+set encoding=utf8
 set backspace=indent,eol,start "Sane backspace behavior
 set history=50
 set scrolloff=4
@@ -95,26 +98,36 @@ set backspace=2
 set colorcolumn=80
 set expandtab
 set tabstop=2
-
+set conceallevel=0
 set shiftwidth=2
 set softtabstop=2
 set ruler
+
+" vim theme
 syntax enable
-" set background=dark
+set background=dark
 " colorscheme solarized
 " colorscheme dracula
 " let g:dracula_italic = 1
 colorscheme gruvbox
+let g:gruvbox_contrast_dark = 'hard'
+" see the cursor better
+nnoremap <silent> [oh :call gruvbox#hls_show()<CR>
+nnoremap <silent> ]oh :call gruvbox#hls_hide()<CR>
+nnoremap <silent> coh :call gruvbox#hls_toggle()<CR>
+nnoremap * :let @/ = ""<CR>:call gruvbox#hls_show()<CR>*
+nnoremap / :let @/ = ""<CR>:call gruvbox#hls_show()<CR>/
+nnoremap ? :let @/ = ""<CR>:call gruvbox#hls_show()<CR>?
 
 " Use The Silver Searcher
 if executable('ag')
   " Use Ag over Grep
   set grepprg=ag\ --nogroup\ --nocolor
 
-  " Use ag in CtrlP for listing files. Lightning fast and respects  .gitignore
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
   let g:ctrlp_user_command = 'ag -Q -l --nocolor --hidden -g "" %s'
   " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_user_caching = 0
+  let g:ctrlp_use_caching = 0
 
   if !exists(":Ag")
     command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
@@ -126,7 +139,9 @@ endif
 set splitbelow
 set splitright
 
+let g:NERDTreeShowHidden=1
 let g:NERDSpaceDelims = 1
+let NERDTreeIgnore = ['.DS_Store']
 " To add git branch to statusline
 set statusline+=%{fugitive#statusline()}
 set statusline+=%{ALEGetStatusLine()}
@@ -147,7 +162,7 @@ autocmd Filetype help nmap <buffer> q :q<CR>
 
 autocmd BufWritePre * %s/\s\+$//e
 
-"Youcompleteme Fix
+" Youcompleteme Fix
 let g:ycm_global_ycm_extra_conf = '~/.vim/plugged/YouCompleteMe/third_party/ycmd/cpp/ycm/.ycm_extra_conf.py'
 
 " Rainbow parentheses
@@ -156,8 +171,13 @@ augroup rainbow_lisp
   autocmd FileType lisp,clojure RainbowParentheses
 augroup END
 
+" ALE linter setup
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '[%linter%] %s [%severity%]'
 
-let g:gruvbox_contrast_dark = 'dark'
+" Prettier
+let g:prettier#config#trailing_comma = 'all'
+let g:prettier#config#parser = 'flow'
+let g:prettier#config#bracket_spacing = 'true'
+let g:prettier#config#jsx_bracket_same_line = 'false'
