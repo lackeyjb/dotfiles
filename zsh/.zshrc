@@ -49,7 +49,10 @@ ZSH_CUSTOM=/Users/bryanlackey/zsh_custom
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(
+  git
+  fzf
+)
 
 # User configuration
 
@@ -100,9 +103,6 @@ if command -v brew >/dev/null 2>&1; then
     [ -f $(brew --prefix)/etc/profile.d/z.sh ] && source $(brew --prefix)/etc/profile.d/z.sh
 fi
 
-alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs -nw"
-source /usr/local/bin/activate.sh
-
 # Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
 export PATH="$PATH:$HOME/.rvm/bin"
 
@@ -130,10 +130,31 @@ setopt hist_ignore_space
 setopt hist_verify
 setopt inc_append_history
 setopt share_history # share command history data
-export ANDROID_HOME=${HOME}/Library/Android/sdk
-export PATH=${PATH}:${ANDROID_HOME}/tools
-export PATH=${PATH}:${ANDROID_HOME}/platform-tools
 
 if [ -d $HOME/bin ]; then
     PATH=$PATH:$HOME/bin
 fi
+
+
+# Vim
+alias vim="nvim"
+alias vi="nvim"
+alias oldvim="vim"
+
+alias clean_branches='git branch | grep -v "master\|develop\|current_branch" | xargs git branch -D'
+
+eval "`fnm env --multi`"
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+export FZF_DEFAULT_COMMAND='rg --files --no-ignore-vcs --hidden'
+
+FORGIT_FZF_DEFAULT_OPTS="
+--exact
+--border
+--cycle
+--reverse
+--height '80%'
+"
